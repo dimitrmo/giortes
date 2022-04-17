@@ -33,7 +33,7 @@ async fn main() -> std::io::Result<()> {
         loop {
             let mut eortologio = shared_eortologio.try_write().unwrap();
             let giortes = eortologio.refresh_giortes_async().await;
-            debug!("giortes updates [{:?}]", giortes);
+            debug!("giortes updated [{:?}]", giortes);
             drop(eortologio); // unlock
             tokio::time::sleep(Duration::from_secs(1200)).await; // every 20 minutes
         }
