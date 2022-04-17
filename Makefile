@@ -20,13 +20,13 @@ run:
 
 .PHONY: docker-build
 docker-build:
-	docker build --squash -t
+	docker build --squash -t giortes:${VERSION} .
 
 .PHONY: docker-push
 docker-push:
-	docker tag cygaz:${VERSION} rg.fr-par.scw.cloud/dimitrmo/giortes:${VERSION}
+	docker tag giortes:${VERSION} rg.fr-par.scw.cloud/dimitrmo/giortes:${VERSION}
 	docker push rg.fr-par.scw.cloud/dimitrmo/giortes:${VERSION}
 
 .PHONY: docker-run
 docker-run:
-	docker run --rm -it -p 18080:8080 -e RUST_LOG=cygaz=debug giortes:${VERSION}
+	docker run --rm -it -p 18080:8080 -e RUST_LOG=giortes=debug giortes:${VERSION}
