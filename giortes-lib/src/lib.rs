@@ -42,18 +42,23 @@ impl Eortologio {
         self.giortes.as_ref()
     }
 
-    pub fn set_giortes(&mut self, giortes: Box<Giortes>) {
-        std::mem::replace(&mut self.giortes, giortes);
-    }
-
-    async fn fetch_feed(&self) -> Result<Channel, Box<dyn Error>> {
+    async fn fetch_feed_async(&self) -> Result<Channel, Box<dyn Error>> {
         let content = reqwest::get(GIORTES_ENDPOINT).await?.bytes().await?;
         let channel = Channel::read_from(&content[..])?;
         Ok(channel)
     }
 
-    pub async fn fetch_giortes(&self) -> Giortes {
-        let channel = self.fetch_feed().await.unwrap();
+    fn fetch_feed(&self) -> Result<Channel, Box<dyn Error>> {
+        let content = reqwest::blocking::get(GIORTES_ENDPOINT)
+            .unwrap()
+            .bytes()
+            .unwrap();
+        let channel = Channel::read_from(&content[..])?;
+        Ok(channel)
+    }
+
+    pub async fn fetch_giortes_async(&self) -> Giortes {
+        let channel = self.fetch_feed_async().await.unwrap();
         let copyright = channel.copyright.unwrap();
 
         let epoch = SystemTime::now().duration_since(UNIX_EPOCH);
@@ -68,5 +73,35 @@ impl Eortologio {
         }
 
         giortes
+    }
+
+    pub fn fetch_giortes(&self) -> Giortes {
+        let channel = self.fetch_feed().unwrap();
+        let copyright = channel.copyright.unwrap();
+
+        let epoch = SystemTime::now().duration_since(UNIX_EPOCH);
+        let epoch_updated_at = epoch.unwrap().as_millis();
+        let mut giortes = Giortes::empty(copyright, epoch_updated_at);
+
+        for item in channel.items {
+            let title = item.title.unwrap();
+            let title_parts = title.split_once(":").unwrap();
+            let names = title_parts.1.trim();
+            giortes.names.push(names.to_string());
+        }
+
+        giortes
+    }
+
+    pub async fn refresh_giortes_async(&mut self) -> &Giortes {
+        let giortes = Box::new(self.fetch_giortes_async().await);
+        let _old = std::mem::replace(&mut self.giortes, giortes);
+        self.get_giortes()
+    }
+
+    pub fn refresh_giortes(&mut self) -> &Giortes {
+        let giortes = Box::new(self.fetch_giortes());
+        let _old = std::mem::replace(&mut self.giortes, giortes);
+        self.get_giortes()
     }
 }

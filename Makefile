@@ -1,5 +1,7 @@
 VERSION=$(shell cargo pkgid | cut -d\# -f2 | cut -d: -f2)
 
+export RUST_BACKTRACE=1
+
 .PHONY: tag
 tag:
 	git tag -a v${VERSION}

@@ -1,35 +1,13 @@
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
-use giortes_lib::{Eortologio, Giortes};
-use log::{debug, info, warn};
-use std::borrow::Borrow;
-use std::ops::{Deref, DerefMut};
-use std::sync::{Arc, Mutex, MutexGuard, RwLock};
-use tokio_cron_scheduler::{Job, JobScheduler};
-
-fn setup_cron(data: Arc<Eortologio>) -> JobScheduler {
-    let sched = JobScheduler::new().unwrap();
-
-    if let Err(e) = sched.add(
-        Job::new_async("0 1,58 * * * *", move |_uuid, _l| {
-            // let mut data = data.clone();
-            // let data = data.clone();
-            Box::pin(async move {
-                let mut eortologio = Arc::clone(data).as_ref();
-                let giortes = eortologio.fetch_giortes().await;
-                eortologio.set_giortes(Box::new(giortes));
-            })
-        })
-        .unwrap(),
-    ) {
-        warn!("error scheduling {:?}", e);
-    }
-
-    sched
-}
+use futures_locks::RwLock;
+use giortes_lib::Eortologio;
+use log::{debug, info};
+use std::sync::Arc;
+use std::time::Duration;
 
 #[get("/giortes")]
-async fn giortes_handler(data: web::Data<Arc<Mutex<Eortologio>>>) -> impl Responder {
-    let eortologio = data.lock().unwrap();
+async fn giortes_handler(data: web::Data<Arc<RwLock<Eortologio>>>) -> impl Responder {
+    let eortologio = data.try_read().unwrap();
     let giortes = eortologio.get_giortes();
     let body = serde_json::to_string(giortes).unwrap();
     HttpResponse::Ok()
@@ -46,23 +24,24 @@ async fn version_handler() -> impl Responder {
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
-    let mut eortologio = Eortologio::default();
-    let giortes = eortologio.fetch_giortes().await;
-    debug!("giortes arrived {:?}", giortes);
-    eortologio.set_giortes(Box::new(giortes));
 
-    let eortologio_mut = Arc::new(eortologio);
+    let eortologio = Arc::new(RwLock::new(Eortologio::default()));
 
-    let scheduler = setup_cron(eortologio_mut.clone());
-    if let Err(e) = scheduler.start() {
-        warn!("scheduler error {:?}", e);
-    } else {
-        info!("scheduler started");
-    }
+    let eortologio_shared = eortologio.clone();
+    tokio::spawn(async move {
+        let shared_eortologio = eortologio_shared.clone();
+        loop {
+            let mut eortologio = shared_eortologio.try_write().unwrap();
+            let giortes = eortologio.refresh_giortes_async().await;
+            debug!("giortes updates [{:?}]", giortes);
+            drop(eortologio); // unlock
+            tokio::time::sleep(Duration::from_secs(1200)).await; // every 20 minutes
+        }
+    });
 
     info!("starting server at :8080");
 
-    let data = web::Data::new(eortologio_mut);
+    let data = web::Data::new(eortologio);
 
     HttpServer::new(move || {
         App::new()
