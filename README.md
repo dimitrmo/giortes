@@ -1,5 +1,5 @@
 # Giortes
-![Giortes](https://github.com/dimitrmo/giortes/actions/workflows/docker.yml/badge.svg)
+![Docker](https://github.com/dimitrmo/giortes/actions/workflows/docker.yml/badge.svg)
 ![Rust](https://github.com/dimitrmo/giortes/actions/workflows/rust.yml/badge.svg)
 
 ## Lessons learned
