@@ -7,7 +7,7 @@ use std::time::Duration;
 
 #[get("/giortes")]
 async fn giortes_handler(data: web::Data<Arc<RwLock<Eortologio>>>) -> impl Responder {
-    let eortologio = data.try_read().unwrap();
+    let eortologio = data.read().await;
     let giortes = eortologio.get_giortes();
     let body = serde_json::to_string(giortes).unwrap();
     HttpResponse::Ok()
@@ -17,8 +17,7 @@ async fn giortes_handler(data: web::Data<Arc<RwLock<Eortologio>>>) -> impl Respo
 
 #[get("/version")]
 async fn version_handler() -> impl Responder {
-    const VERSION: &str = env!("CARGO_PKG_VERSION");
-    VERSION
+    env!("CARGO_PKG_VERSION")
 }
 
 #[tokio::main]
@@ -39,7 +38,7 @@ async fn main() -> std::io::Result<()> {
         }
     });
 
-    info!("starting server at :8080");
+    info!("starting server at :9090");
 
     let data = web::Data::new(eortologio);
 
@@ -49,7 +48,7 @@ async fn main() -> std::io::Result<()> {
             .service(giortes_handler)
             .service(version_handler)
     })
-    .bind("0.0.0.0:8080")?
+    .bind("0.0.0.0:9090")?
     .run()
     .await
 }
