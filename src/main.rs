@@ -38,7 +38,7 @@ async fn main() -> std::io::Result<()> {
         }
     });
 
-    info!("starting server at :9090");
+    info!("starting server at :8081");
 
     let data = web::Data::new(eortologio);
 
@@ -48,7 +48,7 @@ async fn main() -> std::io::Result<()> {
             .service(giortes_handler)
             .service(version_handler)
     })
-    .bind("0.0.0.0:9090")?
+    .bind("0.0.0.0:8081")?
     .run()
     .await
 }
