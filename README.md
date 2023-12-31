@@ -35,10 +35,10 @@
 #### Response
 
     {
-        "updated_at":1650181654165,
-        "copyright":"www.eortologio.gr",
-        "endpoint":"https://www.giortes.gr/rss/si_av_me_el.xml",
-        "names":[
+        "updated_at": 1650181654165,
+        "copyright": "www.eortologio.gr",
+        "endpoint": "https://www.giortes.gr/rss/si_av_me_el.xml",
+        "names": [
             "Βάϊος, Βάϊα, Βάγια, Βαία, Γιούλη, Δάφνη, Δάφνης, Πάσχα Καθολικών",
             "Μεγάλη Δευτέρα, Πάγκαλος",
             "Μεγάλη Τρίτη"

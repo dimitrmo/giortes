@@ -1,14 +1,15 @@
-FROM rust:1.74-slim-bullseye as builder
+FROM rust:1.75-slim-bookworm as builder
 RUN apt-get update \
     && apt-get install -y \
       cmake \
       pkg-config \
-      libssl-dev
+      libssl-dev \
+      g++
 WORKDIR /usr/src/giortes
 COPY . .
 RUN cargo install --path .
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 RUN apt-get update \
     && apt-get install -y \
       ca-certificates \
