@@ -9,32 +9,23 @@ const GIORTES_ENDPOINT: &'static str = "https://www.giortes.gr/rss/si_av_me_el.x
 pub struct Giortes {
     updated_at: u128,
     copyright: String,
-    endpoint: String,
     names: Vec<String>,
 }
 
-impl Giortes {
-    fn empty(copyright: String, updated_at: u128) -> Self {
+impl Default for Giortes {
+
+    fn default() -> Self {
         Giortes {
-            updated_at,
-            copyright,
-            endpoint: GIORTES_ENDPOINT.to_string(),
+            updated_at: 0,
+            copyright: String::from(""),
             names: vec![],
         }
     }
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct Eortologio {
     giortes: Box<Giortes>,
-}
-
-impl Default for Eortologio {
-    fn default() -> Self {
-        Eortologio {
-            giortes: Box::new(Giortes::empty(GIORTES_ENDPOINT.to_string(), 0)),
-        }
-    }
 }
 
 impl Eortologio {
@@ -63,7 +54,9 @@ impl Eortologio {
 
         let epoch = SystemTime::now().duration_since(UNIX_EPOCH);
         let epoch_updated_at = epoch.unwrap().as_millis();
-        let mut giortes = Giortes::empty(copyright, epoch_updated_at);
+        let mut giortes = Giortes::default();
+        giortes.copyright = copyright;
+        giortes.updated_at = epoch_updated_at;
 
         for item in channel.items {
             let title = item.title.unwrap();
@@ -81,7 +74,9 @@ impl Eortologio {
 
         let epoch = SystemTime::now().duration_since(UNIX_EPOCH);
         let epoch_updated_at = epoch.unwrap().as_millis();
-        let mut giortes = Giortes::empty(copyright, epoch_updated_at);
+        let mut giortes = Giortes::default();
+        giortes.copyright = copyright;
+        giortes.updated_at = epoch_updated_at;
 
         for item in channel.items {
             let title = item.title.unwrap();
