@@ -25,6 +25,13 @@ async fn version_handler() -> impl Responder {
 async fn main() -> std::io::Result<()> {
     env_logger::init();
 
+    let host: String = match env::var_os("HOST") {
+        Some(v) => {
+            v.into_string().unwrap_or(String::from("0.0.0.0"))
+        }
+        None => String::from("0.0.0.0")
+    };
+
     let port: String = match env::var_os("PORT") {
         Some(v) => {
             v.into_string().unwrap_or(String::from("8080"))
@@ -46,7 +53,7 @@ async fn main() -> std::io::Result<()> {
         }
     });
 
-    info!("starting server at :{port}");
+    info!("starting server at {host}:{port}");
 
     let data = web::Data::new(eortologio);
 
@@ -56,7 +63,7 @@ async fn main() -> std::io::Result<()> {
             .service(giortes_handler)
             .service(version_handler)
     })
-    .bind(format!("0.0.0.0:{port}"))?
+    .bind(format!("{host}:{port}"))?
     .run()
     .await
 }
