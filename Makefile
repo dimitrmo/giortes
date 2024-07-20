@@ -15,7 +15,7 @@ prod:
 
 .PHONY: run
 run:
-	PORT=9090 \
+	PORT=9091 \
 	RUST_LOG=giortes=debug \
 		cargo run
 

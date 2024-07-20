@@ -1,3 +1,4 @@
+use std::env;
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use futures_locks::RwLock;
 use giortes_lib::Eortologio;
@@ -24,6 +25,13 @@ async fn version_handler() -> impl Responder {
 async fn main() -> std::io::Result<()> {
     env_logger::init();
 
+    let port: String = match env::var_os("PORT") {
+        Some(v) => {
+            v.into_string().unwrap_or(String::from("8080"))
+        }
+        None => String::from("8080")
+    };
+
     let eortologio = Arc::new(RwLock::new(Eortologio::default()));
 
     let eortologio_shared = eortologio.clone();
@@ -38,7 +46,7 @@ async fn main() -> std::io::Result<()> {
         }
     });
 
-    info!("starting server at :8081");
+    info!("starting server at :{port}");
 
     let data = web::Data::new(eortologio);
 
@@ -48,7 +56,7 @@ async fn main() -> std::io::Result<()> {
             .service(giortes_handler)
             .service(version_handler)
     })
-    .bind("0.0.0.0:8081")?
+    .bind(format!("0.0.0.0:{port}"))?
     .run()
     .await
 }
