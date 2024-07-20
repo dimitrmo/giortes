@@ -1,22 +1,29 @@
-FROM rust:1.79-slim-bookworm as builder
+FROM rust:1.79-slim-bookworm AS builder
+
 RUN apt-get update \
     && apt-get install -y \
       cmake \
       pkg-config \
       libssl-dev \
       g++
+
 WORKDIR /usr/src/giortes
+
 COPY . .
+
 RUN cargo install --path .
 
 FROM debian:bookworm-slim
+
 RUN apt-get update \
     && apt-get install -y \
       ca-certificates \
       net-tools \
       libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
-RUN update-ca-certificates
+      curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-ca-certificates \
+
 COPY --from=builder /usr/local/cargo/bin/giortes /usr/local/bin/giortes
 
 LABEL org.opencontainers.image.description="Name days"

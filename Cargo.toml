@@ -1,19 +1,41 @@
 [package]
 name = "giortes"
-version = "0.1.2"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [badges]
 maintenance = { status = "experimental" }
 
-[dependencies]
+[profile.release]
+lto = true
+debug = false
+strip = "debuginfo"
+panic = 'abort'     # Abort on panic
+overflow-checks = true
+codegen-units = 1
+
+[workspace]
+members = [
+    "giortes-lib"
+]
+
+[workspace.package]
+version = "0.1.2"
+edition = "2021"
+
+[workspace.dependencies]
 giortes-lib = { path = "giortes-lib" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[dependencies]
+giortes-lib = { workspace = true }
+serde_json = { workspace = true }
+serde = { workspace = true }
 env_logger = "0.11"
 actix-web = "4.8"
-serde = { version = "1.0", features = [ "derive" ]}
-serde_json = "1.0"
 log = "0.4"
 tokio = { version = "1.38", features = ["full"] }
 futures = "0.3"
