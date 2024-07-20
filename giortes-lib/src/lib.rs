@@ -2,12 +2,14 @@ use rss::Channel;
 use serde::Serialize;
 use std::error::Error;
 use std::time::{SystemTime, UNIX_EPOCH};
+use chrono::DateTime;
 
 const GIORTES_ENDPOINT: &'static str = "https://www.giortes.gr/rss/si_av_me_el.xml";
 
 #[derive(Clone, Debug, Serialize)]
 pub struct Giortes {
     updated_at: u128,
+    updated_at_str: String,
     copyright: String,
     names: Vec<String>,
 }
@@ -17,6 +19,7 @@ impl Default for Giortes {
     fn default() -> Self {
         Giortes {
             updated_at: 0,
+            updated_at_str: String::from(""),
             copyright: String::from(""),
             names: vec![],
         }
@@ -54,9 +57,12 @@ impl Eortologio {
 
         let epoch = SystemTime::now().duration_since(UNIX_EPOCH);
         let epoch_updated_at = epoch.unwrap().as_millis();
+        let datetime = Self::millis_to_datetime(epoch_updated_at);
+
         let mut giortes = Giortes::default();
         giortes.copyright = copyright;
         giortes.updated_at = epoch_updated_at;
+        giortes.updated_at_str = datetime;
 
         for item in channel.items {
             let title = item.title.unwrap();
@@ -68,15 +74,24 @@ impl Eortologio {
         giortes
     }
 
+    fn millis_to_datetime(millis: u128) -> String {
+        let secs = (millis / 1000) as i64;
+        let datetime_utc = DateTime::from_timestamp(secs, 0).unwrap_or_default();
+        datetime_utc.format("%Y-%m-%d %H:%M:%S%.3f UTC").to_string()
+    }
+
     pub fn fetch_giortes(&self) -> Giortes {
         let channel = self.fetch_feed().unwrap();
         let copyright = channel.copyright.unwrap();
 
         let epoch = SystemTime::now().duration_since(UNIX_EPOCH);
         let epoch_updated_at = epoch.unwrap().as_millis();
+        let datetime = Self::millis_to_datetime(epoch_updated_at);
+
         let mut giortes = Giortes::default();
         giortes.copyright = copyright;
         giortes.updated_at = epoch_updated_at;
+        giortes.updated_at_str = datetime;
 
         for item in channel.items {
             let title = item.title.unwrap();
