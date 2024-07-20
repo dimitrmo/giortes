@@ -28,7 +28,6 @@ COPY --from=builder /usr/local/cargo/bin/giortes /usr/local/bin/giortes
 
 LABEL org.opencontainers.image.description="Name days"
 
-ENV TIMEOUT     600000
 ENV HOST        0.0.0.0
 ENV PORT        8080
 ENV RUST_LOG    giortes=info
