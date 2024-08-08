@@ -884,7 +884,7 @@ checksum = "40ecd4077b5ae9fd2e9e169b102c6c330d0605168eb0e8bf79952b256dbefffd"
 
 [[package]]
 name = "giortes"
-version = "0.1.16"
+version = "0.1.17"
 dependencies = [
  "actix-web",
  "env_logger",
@@ -899,7 +899,7 @@ dependencies = [
 
 [[package]]
 name = "giortes-lib"
-version = "0.1.16"
+version = "0.1.17"
 dependencies = [
  "chrono",
  "reqwest",
