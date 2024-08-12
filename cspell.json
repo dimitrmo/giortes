@@ -1,0 +1,19 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "Anson",
+        "azurecr",
+        "azuretools",
+        "devcontainer",
+        "devcontainers",
+        "devwasm",
+        "jungaretti",
+        "protoc",
+        "rustc"
+    ],
+    "ignoreWords": [],
+    "import": []
+}
