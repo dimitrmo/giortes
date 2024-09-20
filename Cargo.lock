@@ -880,7 +880,7 @@ checksum = "32085ea23f3234fc7846555e85283ba4de91e21016dc0455a16286d87a292d64"
 
 [[package]]
 name = "giortes"
-version = "0.1.27"
+version = "0.1.28"
 dependencies = [
  "actix-web",
  "env_logger",
@@ -895,7 +895,7 @@ dependencies = [
 
 [[package]]
 name = "giortes-lib"
-version = "0.1.27"
+version = "0.1.28"
 dependencies = [
  "chrono",
  "reqwest",
@@ -1498,9 +1498,9 @@ dependencies = [
 
 [[package]]
 name = "quick-xml"
-version = "0.36.1"
+version = "0.36.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96a05e2e8efddfa51a84ca47cec303fac86c8541b686d37cac5efc0e094417bc"
+checksum = "f7649a7b4df05aed9ea7ec6f628c67c9953a43869b8bc50929569b2999d443fe"
 dependencies = [
  "encoding_rs",
  "memchr",
