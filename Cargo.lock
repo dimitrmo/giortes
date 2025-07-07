@@ -408,9 +408,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.27"
+version = "1.2.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d487aa071b5f64da6f19a3e848e3578944b726ee5a4854b82172f02aa876bfdc"
+checksum = "5c1599538de2394445747c8cf7935946e3cc27e9625f889d979bfb2aaf569362"
 dependencies = [
  "jobserver",
  "libc",
@@ -903,7 +903,7 @@ checksum = "07e28edb80900c19c28f1072f2e8aeca7fa06b23cd4169cefe1af5aa3260783f"
 
 [[package]]
 name = "giortes"
-version = "0.1.89"
+version = "0.1.90"
 dependencies = [
  "actix-web",
  "env_logger",
@@ -918,7 +918,7 @@ dependencies = [
 
 [[package]]
 name = "giortes-lib"
-version = "0.1.89"
+version = "0.1.90"
 dependencies = [
  "chrono",
  "reqwest",
