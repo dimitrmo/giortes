@@ -890,7 +890,7 @@ dependencies = [
 
 [[package]]
 name = "giortes"
-version = "0.1.119"
+version = "0.1.120"
 dependencies = [
  "actix-web",
  "env_logger",
@@ -905,7 +905,7 @@ dependencies = [
 
 [[package]]
 name = "giortes-lib"
-version = "0.1.119"
+version = "0.1.120"
 dependencies = [
  "chrono",
  "reqwest",
